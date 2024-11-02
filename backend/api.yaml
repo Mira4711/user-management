@@ -1,0 +1,446 @@
+openapi: 3.0.0
+info:
+  title: User Management Backend
+  # description: 
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    # description: 
+
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Liste aller Benutzerkonten
+      # description: 
+      responses:
+        "200": # status code
+          description: JSON array
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                  
+    post:
+      tags:
+        - Users
+      summary: User hinzufügen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mail
+              properties:
+                fname:
+                  type: string
+                name:
+                  type: string
+                mail: 
+                  type: string
+                  format: email
+                phone: 
+                  type: string
+                rights:
+                  type: array
+                  items:
+                    type: string
+      responses: 
+        "201": # status code
+          description: User hinzugefügt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "400": # status code
+          description: E-Mail Adresse nicht befüllt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  error:
+                    type: string
+        "406": # status code
+          description: E-Mail Adresse schon vorhanden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  error:
+                    type: string
+         
+  /users/{uuid}:           
+    put:
+      tags:
+        - Users
+      summary: Zuweisen von Rollen an User
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - roles
+              properties:
+                roles:
+                  type: array
+                  items: 
+                    type: string
+                    format: uuid
+      responses: 
+        "202": # status code
+          description: Update erfolgt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"          
+    delete:
+      tags:
+        - Users
+      summary: User löschen
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses: 
+        "200": # status code
+          description: deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                
+      
+  /roles:
+    get: 
+      tags:
+        - Roles
+      summary: Liste aller Rollen
+      responses:
+        "200":
+          description: Alle Rollen
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Role"
+    post:
+      tags:
+        - Roles
+      summary: Rolle hinzufügen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                rights:
+                  type: array
+                  items:
+                    type: string
+      responses: 
+        "201":
+          description: Rolle hinzugefügt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list: 
+                    type: array
+                    items: 
+                      $ref: "#/components/schemas/Role"
+        "400": # status code
+          description: Name nicht gesetzt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  error:
+                    type: string
+        "406": # status code
+          description: Rolle existiert schon
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  error:
+                    type: string
+  /roles/{uuid}:           
+    put:
+      tags:
+        - Roles
+      summary: Zuweisen von Rechten zu Rolle
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rights
+              properties:
+                rights:
+                  type: array
+                  items: 
+                    type: string
+                    format: uuid
+      responses: 
+        "202": # status code
+          description: Update erfolgt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Role"          
+    delete:
+      tags:
+        - Roles
+      summary: Rolle löschen
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses: 
+        "200": # status code
+          description: deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Role"
+
+  /rights:
+    get: 
+      tags:
+        - Rights
+      summary: Liste aller Rechte
+      responses:
+        "200":
+          description: Alle Rechte
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Right"
+    post:
+      tags:
+        - Rights
+      summary: Recht hinzufügen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses: 
+        "201":
+          description: Recht hinzugefügt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list: 
+                    type: array
+                    items: 
+                      $ref: "#/components/schemas/Right"
+        "400": # status code
+          description: Name nicht gesetzt
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  error:
+                    type: string
+        "406": # status code
+          description: Recht existiert schon
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  error:
+                    type: string
+  /rights/{uuid}:
+    delete:
+      tags:
+        - Rights
+      summary: Recht löschen
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          schema: 
+            type: string
+            format: uuid
+      responses: 
+        "200": # status code
+          description: deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  list:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Right"
+    
+
+components:
+  schemas:
+    User:
+      type: object
+      required: 
+        - mail 
+      properties:
+        uuid: 
+          type: string
+          format: uuid
+        fname: 
+          type: string
+        name:
+          type: string
+        mail: 
+          type: string
+          format: email
+        phone: 
+          type: string
+        roles: 
+          type: array
+          items: 
+            type: string
+            format: uuid
+
+    Role:
+      type: object
+      required:
+        - name
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name: 
+          type: string
+        rights:
+          type: array
+          items: 
+            type: string
+            format: uuid
+            
+    Right: 
+      type: object
+      required:
+        - name
+      properties:
+        uuid: 
+          type: string
+          format: uuid
+        name: 
+          type: string
